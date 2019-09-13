@@ -26,6 +26,7 @@ import cmd
 import textwrap
 import colorama
 import ctypes
+import platform
 
 # Output colors
 
@@ -126,6 +127,13 @@ worldRooms = {
                 UP : 'Attic',
                 GROUND:['Cassette']
         },
+
+        'Attic' : {
+            DESC : "Above you is an old wooden hatch with a brass ring, using your feeble legs you give up trying to reach for it and instead grab a hook from beside you and leaver the creaky door open, about a million weevels fall from the opening. You climb inside.",
+            DOWN : "2nd Floor",
+            UP: "Roof",
+            GROUND : ['Weevels']
+        }
         
     }
 
@@ -140,7 +148,7 @@ worldItems = {
                 EDIBLE: False,
                 USEABLE: True,
                 DESCWORDS: ['old', 'key'],
-                STORAGEDESC: '[The old key] is within the chest, its like leaving the car keys in the in the car and regretting your choice forever, good job..'
+                STORAGEDESC: '[The old key] is within the chest, its like leaving the car keys in the in the car and regretting ever being born, good job..'
                 
 
             },
@@ -152,7 +160,7 @@ worldItems = {
                 DESCWORDS: ['id', 'card'],
                 EDIBLE: False,
                 USEABLE: False,
-                STORAGEDESC: '[ID] You dropped your *BLEEP* card.',
+                STORAGEDESC: '[ID] Not even the blackness of the chest can hide your ugly mug, not even the weevles will go near it.',
             },
         'Note': {
                 GROUNDDESC: 'A note lies here, its hard to make out what it says from where you are',
@@ -182,7 +190,7 @@ worldItems = {
         'Dusty Books': {
             GROUNDDESC: 'A pile of dusty books lies on the floor near a reading desk.',
             SHORTDESC: 'Dusty Books',
-            LONGDESC: 'A pile of dusty old books pages half rotting away, its hard to make out what is written in them, Hitchickers Guide to the Galaxy, How to stew a ham in 43 different ways... the list goes on.',
+            LONGDESC: 'A pile of dusty old books pages half rotting away, its hard to make out what is written in them, Hitchickers Guide to the Galaxy, How to stew a ham in 43 different ways and various other, written, human detritus.',
             EDIBLE: False,
             USEABLE: False,
             DESCWORDS: ['books','book'],
@@ -194,7 +202,7 @@ worldItems = {
             SHORTDESC: 'Gun',
             LONGDESC: 'A 32 ACP revolver it has 5 chaimbers, one of the cartridges has been fired.',
             EDIBLE: False,
-            USEABLE: False,
+            USEABLE: True,
             DESCWORDS: ['Gun','gun','revolver'],
             STORAGEDESC: '[Gun] Better the gun be in here then in my hands..',
         },
@@ -224,12 +232,12 @@ worldItems = {
         'Troll' : {
             SHORTDESC: 'A troll figure',
             GROUNDDESC : 'A troll is somewhere around here.',
-            LONGDESC : 'A small troll figure carved from wood, you turn it over in your hands, an inscription on the base "RIP Inbag the Troll.", a disembodied voice tells you to not put it in your bag.',
+            LONGDESC : 'A small troll figure carved from wood, you turn it over in your hands, an inscription on the base "RIP Inbag the Troll.", a disembodied scottish voice tells you to not put it in your bag.',
             EDIBLE : False,
             USEABLE: False,
             TAKEABLE : False,
             DESCWORDS : ['Troll', 'troll', 'figure', 'statue'],
-            STORAGEDESC : '[Troll] The troll lies disgruntled in the chest, its not a bag but that is cheating in a major way.',
+            STORAGEDESC : '[Troll] The troll lies disgruntled in the chest, its dark in there, it might be eaten by a Grew.'
         },
         
         'Cassette' : {
@@ -242,6 +250,17 @@ worldItems = {
             DESCWORDS: ['tape', 'cassette', 'music tape', 'music'],
             STORAGEDESC : '[Tape] A tape lies in the bottom of the chest, we would have prefered you to burn it but this choice is yours.',
         },
+
+        'Weevels' : {
+            SHORTDESC: 'A pile of dead weevels',
+            GROUNDDESC : 'A pile of rotting weeveles lay on the ground.',
+            LONGDESC : 'Its a pile of fucking rotting weevels',
+            EDIBLE : True,
+            USEABLE : False,
+            TAKEABLE : True,
+            DESCWORDS: ['weevels', 'pile of weevels', 'rotting weevels'],
+            STORAGEDESC : '[Weevels] A pile of rotting weevel husks lie at the bottom of the chest.'
+        }
     }
 
 global default
@@ -710,7 +729,7 @@ class TextAdventureCmd(cmd.Cmd):
 
         return list(set(possibleItems)) # make list unique
 
-        arg = arg.lower()
+        #arg = arg.lower()
     
     # Extra ways of writing commands
     do_read = do_look
@@ -763,7 +782,10 @@ class TextAdventureCmd(cmd.Cmd):
     
     def do_clear(self, arg):
         """"clear" - Clear all text from the screen."""
-        os.system("cls")
+        if platform.system == "Windows":
+            os.system("cls")
+        else:
+            os.system("clear")
 
     # :)
     def do_hacf(self, arg):
