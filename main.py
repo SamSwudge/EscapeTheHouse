@@ -12,15 +12,15 @@
 # - https://inventwithpython.com/blog/2014/12/11/making-a-text-adventure-game-with-the-cmd-and-textwrap-python-modules/
 #
 # To-Do:
-#	Have a lighting system like in Zork, where the player must have a torch to enter certain rooms
-#	Have some combat
-#	Items within items needs fixing / implementing
-#	Fix bug where trying to store items outside of the mainhall produces an error
+#   Have a lighting system like in Zork, where the player must have a torch to enter certain rooms
+#   Have some combat
+#   Items within items needs fixing / implementing
+#   Fix bug where trying to store items outside of the mainhall produces an error
 
 
 import _random
 import datetime
-import player_class # Player class external
+#import player_class # Player class external
 import os
 import cmd
 import textwrap
@@ -32,11 +32,11 @@ import ctypes
 colorama.init()
 
 # Set Window title
-ctypes.windll.kernel32.SetConsoleTitleA("Escape The House v5.0.9")
+#ctypes.windll.kernel32.SetConsoleTitleA("Escape The House v5.0.9")
 
 class bcolors:
-	start = "\033[1;31m"
-	end = "\033[0;0m"
+    start = "\033[1;31m"
+    end = "\033[0;0m"
 
 # Constent variables
 DEFAULT = ''
@@ -75,174 +75,174 @@ showFullExits = False
 # Define rooms here
 
 worldRooms = {
-		'Entrance Hall': {
-				DESC: "You stand in a hallway with a single door infront of you, the room is dimly lit from a single bulb that flickers occosionally.",
-				NORTH: 'Main Hall',
-				GROUND: ['Old Key', 'Note', 'Sack'],
-			},
-		'Main Hall': {
-				DESC: 'You stand in the main hall there are debris everywhere you look it looks a bomb went off in here, there is also a small troll statue on the side table.',
-				SOUTH: 'Entrance Hall',
-				EAST: 'Kitchen',
-				WEST: 'Library',
-				UP: '2nd Floor',
-				GROUND: ['Torch', 'Chest', 'Troll'],
-				STORAGE: [], # Used to store items and win the game
-			},
-			
-		'Kitchen' : {
-				DESC: "You stand in what appears to be a large kitchen, pots and pans hang from the walls and though dusty look quite well used.",
-				SOUTH: 'Main Hall',
-				EAST: 'Garden',
-				GROUND: '',
-		},
-		
-		'Garden' : {
-			DESC: "You are in an overgrown garden, a prestine lawn-mower lies in the undergrown somewhat ironically, a tree house can be seen in the distance",
-			WEST: "Kitchen",
-			UP: "Treehouse",
-			GROUND: '',
-		},
-		
-		"Treehouse" : {
-			DESC: "With much effort on your part and that of the rather brittle ladders, you make it to the top, a strong breeze shakes the tree and you being to feel rather ill.",
-			NORTH: "Flimsy Branch",
-			DOWN: "Garden",
-			GROUND: "",
+        'Entrance Hall': {
+                DESC: "You stand in a hallway with a single door infront of you, the room is dimly lit from a single bulb that flickers occosionally.",
+                NORTH: 'Main Hall',
+                GROUND: ['Old Key', 'Note', 'Sack'],
+            },
+        'Main Hall': {
+                DESC: 'You stand in the main hall there are debris everywhere you look it looks a bomb went off in here, there is also a small troll statue on the side table.',
+                SOUTH: 'Entrance Hall',
+                EAST: 'Kitchen',
+                WEST: 'Library',
+                UP: '2nd Floor',
+                GROUND: ['Torch', 'Chest', 'Troll'],
+                STORAGE: [], # Used to store items and win the game
+            },
+            
+        'Kitchen' : {
+                DESC: "You stand in what appears to be a large kitchen, pots and pans hang from the walls and though dusty look quite well used.",
+                SOUTH: 'Main Hall',
+                EAST: 'Garden',
+                GROUND: '',
+        },
+        
+        'Garden' : {
+            DESC: "You are in an overgrown garden, a prestine lawn-mower lies in the undergrown somewhat ironically, a tree house can be seen in the distance",
+            WEST: "Kitchen",
+            UP: "Treehouse",
+            GROUND: '',
+        },
+        
+        "Treehouse" : {
+            DESC: "With much effort on your part and that of the rather brittle ladders, you make it to the top, a strong breeze shakes the tree and you being to feel rather ill.",
+            NORTH: "Flimsy Branch",
+            DOWN: "Garden",
+            GROUND: "",
 
-		},
-			
-		'Library': {
-				DESC: "You walk into the Library, the smell of dusty books invades your nostrils. There is a valuted ceiling here and the moonlight shines into the room through stained glass windows making dancing shapes on the bookcases.",
-				EAST: 'Main Hall',
-				GROUND: ['Dusty Books', 'Gun'],
-			},
-		
-		'2nd Floor' : {
-				DESC: "You go up the spiraling staircase onto the second floor, the first was blocked by an impassable door, you look down and have sudden virtigo from the height, you turn around.",
-				DOWN: 'Main Hall',
-				WEST : 'Library 2nd Floor',
-				EAST : 'Bedroom',
-				UP : 'Attic',
-				GROUND:['Cassette']
-		},
-		
-	}
+        },
+            
+        'Library': {
+                DESC: "You walk into the Library, the smell of dusty books invades your nostrils. There is a valuted ceiling here and the moonlight shines into the room through stained glass windows making dancing shapes on the bookcases.",
+                EAST: 'Main Hall',
+                GROUND: ['Dusty Books', 'Gun'],
+            },
+        
+        '2nd Floor' : {
+                DESC: "You go up the spiraling staircase onto the second floor, the first was blocked by an impassable door, you look down and have sudden virtigo from the height, you turn around.",
+                DOWN: 'Main Hall',
+                WEST : 'Library 2nd Floor',
+                EAST : 'Bedroom',
+                UP : 'Attic',
+                GROUND:['Cassette']
+        },
+        
+    }
 
 # Define items in the world
 
 worldItems = {
-		'Old Key': {
-				GROUNDDESC: 'A dull brass key lies on the ground here.',
-				SHORTDESC: 'Old key',
-				LONGDESC: 'The old key has intricate inscriptions on it, it is covered in dust from years of unuse, it is cool to the touch.',
-				TAKEABLE: True,
-				EDIBLE: False,
-				USEABLE: True,
-				DESCWORDS: ['old', 'key'],
-				STORAGEDESC: '[The old key] is within the chest, its like leaving the car keys in the in the car and regretting your choice forever, good job..'
-				
+        'Old Key': {
+                GROUNDDESC: 'A dull brass key lies on the ground here.',
+                SHORTDESC: 'Old key',
+                LONGDESC: 'The old key has intricate inscriptions on it, it is covered in dust from years of unuse, it is cool to the touch.',
+                TAKEABLE: True,
+                EDIBLE: False,
+                USEABLE: True,
+                DESCWORDS: ['old', 'key'],
+                STORAGEDESC: '[The old key] is within the chest, its like leaving the car keys in the in the car and regretting your choice forever, good job..'
+                
 
-			},
-		'Personal ID': {
-				GROUNDDESC: 'Your personal identification card lies on the floor.',
-				SHORTDESC: 'Your ID card.',
-				LONGDESC: 'Through much mental anguish you read your card, You are Henry Burton, your age is 34 and have no idea of where you are.',
-				TAKEABLE: True,
-				DESCWORDS: ['id', 'card'],
-				EDIBLE: False,
-				USEABLE: False,
-				STORAGEDESC: '[ID] You dropped your *BLEEP* card.',
-			},
-		'Note': {
-				GROUNDDESC: 'A note lies here, its hard to make out what it says from where you are',
-				SHORTDESC: 'Note',
-				LONGDESC: 'Its a note and it reads "There was no mailbox outside to leave this in so I just left it here.."',
-				TAKEABLE: True,
-				EDIBLE: True,
-				USEABLE: True,
-				USEDESCTRUE: 'You use the note, and wipe your snotty nose with it, now you have a snotty note, gross.',
-				DESCWORDS: ['note'],
-				STORAGEDESC : '[Note] Not sure when you want this in here, but it is regardless..'
-				
-			},
-		'Torch': {
-				GROUNDDESC: 'A typical torch / flashlight lies on the floor',
-				SHORTDESC: 'Torch / Flashlight.',
-				LONGDESC: 'The torch / flashlight emits a soft flow, just enough to light the way.',
-				EDIBLE: False,
-				USEABLE: True,
-				TOGGLE: False,
-				USEDESCTRUE: 'You click the top of the touch, a beam illuminates your way, you can now be lost and see what you are doing.',
-				USEDESCFALSE: 'YOu click the top of the touch, you think "Hey who turned out the lights.", the torch stays on, you bust the switch with your meaty fingers.. good job.',
-				DESCWORDS: ['torch', 'flashlight'],
-				STORAGEDESC: '[Torch] In the blackness of the chest not even the torches light esacpes.. spooky.',
-			},
-			
-		'Dusty Books': {
-			GROUNDDESC: 'A pile of dusty books lies on the floor near a reading desk.',
-			SHORTDESC: 'Dusty Books',
-			LONGDESC: 'A pile of dusty old books pages half rotting away, its hard to make out what is written in them, Hitchickers Guide to the Galaxy, How to stew a ham in 43 different ways... the list goes on.',
-			EDIBLE: False,
-			USEABLE: False,
-			DESCWORDS: ['books','book'],
-			STORAGEDESC: '[Dusty Books] The books lie at the bottom of the chest looking miserable.'
-		},
-		
-		'Gun': {
-			GROUNDDESC: 'A gun lies on the floor here.',
-			SHORTDESC: 'Gun',
-			LONGDESC: 'A 32 ACP revolver it has 5 chaimbers, one of the cartridges has been fired.',
-			EDIBLE: False,
-			USEABLE: False,
-			DESCWORDS: ['Gun','gun','revolver'],
-			STORAGEDESC: '[Gun] Better the gun be in here then in my hands..',
-		},
-		
-		'Sack': {
-			GROUNDDESC: 'A sack of burlap lies on the floor here',
-			SHORTDESC: 'Sack',
-			LONGDESC: 'Its an old sack used for storing things in, it smells like onions.',
-			EDIBLE: False,
-			DESCWORDS: ['Sack', 'bag', 'sack'],
-			STORAGEDESC: '[Sack] A container with in a container, its like that terrible movie with Leonardo DiCaprio..',
-			# Attempting "Items within Items"
-			ITEMINV: ['Lunch'],
-			
-		},
-		
-		'Chest' : {
-			SHORTDESC: 'A wooden chest',
-			GROUNDDESC: 'A wooden chest resides in the far corner of this room with an incription on it.',
-			LONGDESC: 'Its an old wooden chest with the inscription "Por viaj malmolaj gajnitaj eroj." the language begins with an Esp... you know that much.',
-			EDIBLE: False,
-			TAKEABLE: False,
-			USEABLE: False,
-			DESCWORDS: ['Chest', 'Box', 'Crate', 'chest', 'box', 'crate'],
-		},
-		
-		'Troll' : {
-			SHORTDESC: 'A troll figure',
-			GROUNDDESC : 'A troll is somewhere around here.',
-			LONGDESC : 'A small troll figure carved from wood, you turn it over in your hands, an inscription on the base "RIP Inbag the Troll.", a disembodied voice tells you to not put it in your bag.',
-			EDIBLE : False,
-			USEABLE: False,
-			TAKEABLE : False,
-			DESCWORDS : ['Troll', 'troll', 'figure', 'statue'],
-			STORAGEDESC : '[Troll] The troll lies disgruntled in the chest, its not a bag but that is cheating in a major way.',
-		},
-		
-		'Cassette' : {
-			SHORTDESC: 'A cassette tape',
-			GROUNDDESC: 'A cassette tape lies here on the floor, someone must have "dropped the bass".',
-			LONGDESC: 'You turn the cassette tape over in your hands, the lable reads "Best of the 60s", it possibly contains Fleetwood Mac and thus must be destroyed immediately.',
-			EDIBLE: False,
-			USEABLE: False,
-			TAKEABLE: True,
-			DESCWORDS: ['tape', 'cassette', 'music tape', 'music'],
-			STORAGEDESC : '[Tape] A tape lies in the bottom of the chest, we would have prefered you to burn it but this choice is yours.',
-		},
-	}
+            },
+        'Personal ID': {
+                GROUNDDESC: 'Your personal identification card lies on the floor.',
+                SHORTDESC: 'Your ID card.',
+                LONGDESC: 'Through much mental anguish you read your card, You are Henry Burton, your age is 34 and have no idea of where you are.',
+                TAKEABLE: True,
+                DESCWORDS: ['id', 'card'],
+                EDIBLE: False,
+                USEABLE: False,
+                STORAGEDESC: '[ID] You dropped your *BLEEP* card.',
+            },
+        'Note': {
+                GROUNDDESC: 'A note lies here, its hard to make out what it says from where you are',
+                SHORTDESC: 'Note',
+                LONGDESC: 'Its a note and it reads "There was no mailbox outside to leave this in so I just left it here.."',
+                TAKEABLE: True,
+                EDIBLE: True,
+                USEABLE: True,
+                USEDESCTRUE: 'You use the note, and wipe your snotty nose with it, now you have a snotty note, gross.',
+                DESCWORDS: ['note'],
+                STORAGEDESC : '[Note] Not sure when you want this in here, but it is regardless..'
+                
+            },
+        'Torch': {
+                GROUNDDESC: 'A typical torch / flashlight lies on the floor',
+                SHORTDESC: 'Torch / Flashlight.',
+                LONGDESC: 'The torch / flashlight emits a soft flow, just enough to light the way.',
+                EDIBLE: False,
+                USEABLE: True,
+                TOGGLE: False,
+                USEDESCTRUE: 'You click the top of the touch, a beam illuminates your way, you can now be lost and see what you are doing.',
+                USEDESCFALSE: 'YOu click the top of the touch, you think "Hey who turned out the lights.", the torch stays on, you bust the switch with your meaty fingers.. good job.',
+                DESCWORDS: ['torch', 'flashlight'],
+                STORAGEDESC: '[Torch] In the blackness of the chest not even the torches light esacpes.. spooky.',
+            },
+            
+        'Dusty Books': {
+            GROUNDDESC: 'A pile of dusty books lies on the floor near a reading desk.',
+            SHORTDESC: 'Dusty Books',
+            LONGDESC: 'A pile of dusty old books pages half rotting away, its hard to make out what is written in them, Hitchickers Guide to the Galaxy, How to stew a ham in 43 different ways... the list goes on.',
+            EDIBLE: False,
+            USEABLE: False,
+            DESCWORDS: ['books','book'],
+            STORAGEDESC: '[Dusty Books] The books lie at the bottom of the chest looking miserable.'
+        },
+        
+        'Gun': {
+            GROUNDDESC: 'A gun lies on the floor here.',
+            SHORTDESC: 'Gun',
+            LONGDESC: 'A 32 ACP revolver it has 5 chaimbers, one of the cartridges has been fired.',
+            EDIBLE: False,
+            USEABLE: False,
+            DESCWORDS: ['Gun','gun','revolver'],
+            STORAGEDESC: '[Gun] Better the gun be in here then in my hands..',
+        },
+        
+        'Sack': {
+            GROUNDDESC: 'A sack of burlap lies on the floor here',
+            SHORTDESC: 'Sack',
+            LONGDESC: 'Its an old sack used for storing things in, it smells like onions.',
+            EDIBLE: False,
+            DESCWORDS: ['Sack', 'bag', 'sack'],
+            STORAGEDESC: '[Sack] A container with in a container, its like that terrible movie with Leonardo DiCaprio..',
+            # Attempting "Items within Items"
+            ITEMINV: ['Lunch'],
+            
+        },
+        
+        'Chest' : {
+            SHORTDESC: 'A wooden chest',
+            GROUNDDESC: 'A wooden chest resides in the far corner of this room with an incription on it.',
+            LONGDESC: 'Its an old wooden chest with the inscription "Por viaj malmolaj gajnitaj eroj." the language begins with an Esp... you know that much.',
+            EDIBLE: False,
+            TAKEABLE: False,
+            USEABLE: False,
+            DESCWORDS: ['Chest', 'Box', 'Crate', 'chest', 'box', 'crate'],
+        },
+        
+        'Troll' : {
+            SHORTDESC: 'A troll figure',
+            GROUNDDESC : 'A troll is somewhere around here.',
+            LONGDESC : 'A small troll figure carved from wood, you turn it over in your hands, an inscription on the base "RIP Inbag the Troll.", a disembodied voice tells you to not put it in your bag.',
+            EDIBLE : False,
+            USEABLE: False,
+            TAKEABLE : False,
+            DESCWORDS : ['Troll', 'troll', 'figure', 'statue'],
+            STORAGEDESC : '[Troll] The troll lies disgruntled in the chest, its not a bag but that is cheating in a major way.',
+        },
+        
+        'Cassette' : {
+            SHORTDESC: 'A cassette tape',
+            GROUNDDESC: 'A cassette tape lies here on the floor, someone must have "dropped the bass".',
+            LONGDESC: 'You turn the cassette tape over in your hands, the lable reads "Best of the 60s", it possibly contains Fleetwood Mac and thus must be destroyed immediately.',
+            EDIBLE: False,
+            USEABLE: False,
+            TAKEABLE: True,
+            DESCWORDS: ['tape', 'cassette', 'music tape', 'music'],
+            STORAGEDESC : '[Tape] A tape lies in the bottom of the chest, we would have prefered you to burn it but this choice is yours.',
+        },
+    }
 
 global default
 default = ""
@@ -261,17 +261,17 @@ def displayLocation(loc, default):
         print("")
         for item in worldRooms[loc][GROUND]:
             print(worldItems[item][GROUNDDESC])
-	
-	try:
-		# Check storage exists
-		if len(worldRooms[loc][STORAGE]) > 0:
-			print(bcolors.start + "The treasures you have accrewed thus far are (Chest) :" + bcolors.end)
-			for item in worldRooms[loc][STORAGE]:
-				print (worldItems[item][STORAGEDESC])
-	except KeyError:
-		return default
-	
-	
+    
+    try:
+        # Check storage exists
+        if len(worldRooms[loc][STORAGE]) > 0:
+            print(bcolors.start + "The treasures you have accrewed thus far are (Chest) :" + bcolors.end)
+            for item in worldRooms[loc][STORAGE]:
+                print (worldItems[item][STORAGEDESC])
+    except KeyError:
+        return default
+    
+    
     # Print all the exits.
     exits = []
     for direction in (NORTH, SOUTH, EAST, WEST, UP, DOWN):
@@ -340,7 +340,7 @@ class TextAdventureCmd(cmd.Cmd):
     def do_quit(self, arg):
         """Quit the game."""
         return True # this exits the Cmd application loop in TextAdventureCmd.cmdloop()
-	
+    
     def help_combat(self):
         print('Combat is not implemented in this program.')
 
@@ -388,9 +388,9 @@ class TextAdventureCmd(cmd.Cmd):
             print('Showing full exit descriptions.')
         else:
             print('Showing brief exit descriptions.')
-	
-	
-	
+    
+    
+    
     def do_inventory(self, arg):
         """Display a list of the items in your possession."""
 
@@ -440,13 +440,13 @@ class TextAdventureCmd(cmd.Cmd):
             worldRooms[location][GROUND].remove(item) # remove from the ground
             inventory.append(item) # add to inventory
             return
-		
+        
         # something funny
         if itemToTake == 'chest':
-			print(bcolors.start + "Your feeble arms buckle under the weight of the enormous chest, nice try you theiving git." + bcolors.end)
-			return
-			
-			
+            print(bcolors.start + "Your feeble arms buckle under the weight of the enormous chest, nice try you theiving git." + bcolors.end)
+            return
+            
+            
         if cantTake:
             print('You cannot take "%s".' % (itemToTake))
         else:
@@ -457,35 +457,35 @@ class TextAdventureCmd(cmd.Cmd):
         
     
     def do_use(self, arg):
-		""""use <item> - Use an item in in your inventory."""
-		itemToUse = arg.lower()
-		
-		if itemToUse == '':
-			print('Use what? Type "inv" to see the items in your invetory.')
-			return
-		
-		cantUse = False
-		
-		#look up the item the player describes
-		invDescWords = getAllDescWords(inventory)
-		
-		if itemToUse not in invDescWords:
-			print('You do not have that item to use it')
-			return
-		
-		for item in getAllItemsMatchingDesc(itemToUse, inventory):
-			if worldItems[item].get(USEABLE, True) == False:
-				cantUse = True
-				continue
-			print('%s' % (worldItems[item][USEDESCTRUE]))
-			#print('You use %s' % (worldItems[item][SHORTDESC]))
-			#inventory.remove(item) 
-			return
-		
-		if cantUse:
-			print('You cannot use "%s".' % (itemToUse))
-		else:
-			print('You do not have that item to use.')
+        """"use <item> - Use an item in in your inventory."""
+        itemToUse = arg.lower()
+        
+        if itemToUse == '':
+            print('Use what? Type "inv" to see the items in your invetory.')
+            return
+        
+        cantUse = False
+        
+        #look up the item the player describes
+        invDescWords = getAllDescWords(inventory)
+        
+        if itemToUse not in invDescWords:
+            print('You do not have that item to use it')
+            return
+        
+        for item in getAllItemsMatchingDesc(itemToUse, inventory):
+            if worldItems[item].get(USEABLE, True) == False:
+                cantUse = True
+                continue
+            print('%s' % (worldItems[item][USEDESCTRUE]))
+            #print('You use %s' % (worldItems[item][SHORTDESC]))
+            #inventory.remove(item) 
+            return
+        
+        if cantUse:
+            print('You cannot use "%s".' % (itemToUse))
+        else:
+            print('You do not have that item to use.')
 
 
     def do_drop(self, arg):
@@ -521,8 +521,8 @@ class TextAdventureCmd(cmd.Cmd):
         
         # Nice little easter egg :) 
         if itemToStore == 'troll in bag':
-			print(bcolors.start + "You cannot put troll in bag, troll is a creature." + bcolors.end)
-			return
+            print(bcolors.start + "You cannot put troll in bag, troll is a creature." + bcolors.end)
+            return
 
         # find out if the player doesn't have that item
         if itemToStore not in invDescWords:
@@ -548,8 +548,8 @@ class TextAdventureCmd(cmd.Cmd):
         
         # Nice little easter egg :) 
         if itemToStore == 'troll in bag':
-			print(bcolors.start + "You cannot put troll in bag, troll is a creature." + bcolors.end)
-			return
+            print(bcolors.start + "You cannot put troll in bag, troll is a creature." + bcolors.end)
+            return
 
         # find out if the player doesn't have that item
         if itemToStore not in invDescWords:
@@ -560,15 +560,15 @@ class TextAdventureCmd(cmd.Cmd):
         # get the item name that the player's command describes
         
         try:
-			item = getFirstItemMatchingDesc(itemToStore, inventory)
-			
-			# broken currently, needs some work doing to check if the STORAGE value exists in the current room then store the item.
-			if item != None:
-				print('You store %s in a safe place.' % (worldItems[item][SHORTDESC]))
-				inventory.remove(item)
-				worldRooms[location][STORAGE].append(item)
+            item = getFirstItemMatchingDesc(itemToStore, inventory)
+            
+            # broken currently, needs some work doing to check if the STORAGE value exists in the current room then store the item.
+            if item != None:
+                print('You store %s in a safe place.' % (worldItems[item][SHORTDESC]))
+                inventory.remove(item)
+                worldRooms[location][STORAGE].append(item)
         except KeyError:
-			return("Don't even think about it buster brown.")
+            return("Don't even think about it buster brown.")
         
         #item = getFirstItemMatchingDesc(itemToStore, inventory)
         #if item != None:
@@ -666,11 +666,11 @@ class TextAdventureCmd(cmd.Cmd):
         if item != None:
             print('\n'.join(textwrap.wrap(worldItems[item][LONGDESC], SCREEN_WIDTH)))
             return
-			
+            
         
         print('You do not see that nearby.')
-	
-			
+    
+            
 
     def complete_look(self, text, line, begidx, endidx):
         possibleItems = []
@@ -762,28 +762,28 @@ class TextAdventureCmd(cmd.Cmd):
     do_exit = do_quit # another way of exiting the game with a differnt word
     
     def do_clear(self, arg):
-		""""clear" - Clear all text from the screen."""
-		os.system("cls")
+        """"clear" - Clear all text from the screen."""
+        os.system("cls")
 
-	# :)
+    # :)
     def do_hacf(self, arg):
-		if 'Troll' in worldRooms['Main Hall'][STORAGE]:
-			print(bcolors.start + 'A patch will be released soon, you have compinsated, please do not take us to court.' + bcolors.end)
-		
-		else:
-			"""hacf - ### ?????? ###"""
-			fake_error = ValueError('ERROR : The spacetime continum has been breached, all you know is a lie.')
-			print(fake_error)
-			print(bcolors.start + "The developer is sorry for this bug, we have deposited something nice for you in the chest." + bcolors.end)
-			#worldItems[item][DESCWORDS]
-			item = 'Troll'
-			worldRooms['Main Hall'][STORAGE].append(item)
-			worldRooms['Main Hall'][GROUND].remove(item)
-		
-		
+        if 'Troll' in worldRooms['Main Hall'][STORAGE]:
+            print(bcolors.start + 'A patch will be released soon, you have compinsated, please do not take us to court.' + bcolors.end)
+        
+        else:
+            """hacf - ### ?????? ###"""
+            fake_error = ValueError('ERROR : The spacetime continum has been breached, all you know is a lie.')
+            print(fake_error)
+            print(bcolors.start + "The developer is sorry for this bug, we have deposited something nice for you in the chest." + bcolors.end)
+            #worldItems[item][DESCWORDS]
+            item = 'Troll'
+            worldRooms['Main Hall'][STORAGE].append(item)
+            worldRooms['Main Hall'][GROUND].remove(item)
+        
+        
 
-				
-		
+                
+        
 if __name__ == '__main__':
     print(bcolors.start + '  Escape the house  ' + bcolors.end)
     print('====================')
@@ -794,6 +794,6 @@ if __name__ == '__main__':
     TextAdventureCmd().cmdloop()
     
     if len(STORAGE) > 15:
-		print("You hear a soft click, could it be a trap?, Gnomes?!, *GASP* swamp folk... the worst, no its just the door opening, you are free to leave.")
-		print("Congratulations are in order, you found evenything however turns out you could have just opened the door it was never locked at all... good job though..")
+        print("You hear a soft click, could it be a trap?, Gnomes?!, *GASP* swamp folk... the worst, no its just the door opening, you are free to leave.")
+        print("Congratulations are in order, you found evenything however turns out you could have just opened the door it was never locked at all... good job though..")
     print('Looks like you are going to be stuck here for a very, very long time.')
