@@ -119,6 +119,12 @@ worldRooms = {
                 EAST: 'Main Hall',
                 GROUND: ['Dusty Books', 'Gun'],
             },
+
+        'Library 2nd Floor': {
+                DESC : "You pass thorugh a creaky door on your way to the second floor libary.",
+                EAST : "2nd Floor",
+                GROUND : "",
+        },
         
         '2nd Floor' : {
                 DESC: "You go up the spiraling staircase onto the second floor, the first was blocked by an impassable door, you look down and have sudden virtigo from the height, you turn around.",
@@ -455,7 +461,6 @@ class TextAdventureCmd(cmd.Cmd):
             if worldItems[item].get(TAKEABLE, True) == False:
                 cantTake = True
                 continue # there may be other items named this that you can take, so we continue checking
-            #print('You take %s.' % (worldItems[item][SHORTDESC]))
             print("Taken.")
             worldRooms[location][GROUND].remove(item) # remove from the ground
             inventory.append(item) # add to inventory
