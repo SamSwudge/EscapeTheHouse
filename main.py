@@ -16,6 +16,7 @@
 #   Have some combat
 #   Items within items needs fixing / implementing
 #   Fix bug where trying to store items outside of the mainhall produces an error
+#   Ui Improvements
 
 
 import _random
